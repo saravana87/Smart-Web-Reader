@@ -1,26 +1,15 @@
-import { useState } from "react"
+import React from "react"
 
-function IndexPopup() {
-  const [data, setData] = useState("")
-
+const IndexPopup = () => {
   return (
-    <div
-      style={{
-        padding: 16
-      }}>
-      <h2>
-        Welcome to your{" "}
-        <a href="https://www.plasmo.com" target="_blank">
-          Plasmo
-        </a>{" "}
-        Extension!
-      </h2>
-      <input onChange={(e) => setData(e.target.value)} value={data} />
-      <a href="https://docs.plasmo.com" target="_blank">
-        View Docs
-      </a>
+    <div style={{ padding: 24, fontFamily: 'Segoe UI, Arial, sans-serif', fontSize: 16, color: '#1976d2', textAlign: 'center', width: 320 }}>
+      <b>AI Reader Extension</b>
+      <div style={{ marginTop: 12, color: '#444', fontSize: 14 }}>
+        This extension works automatically on every page.<br />
+        Use the floating <b>AI Reader</b> button on the web page to extract and process content.
+      </div>
     </div>
-  )
+  );
 }
 
 export default IndexPopup

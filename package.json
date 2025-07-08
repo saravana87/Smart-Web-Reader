@@ -1,15 +1,17 @@
 {
-  "name": "test",
-  "displayName": "Test",
+  "name": "web-content-preprocessor-extension",
+  "displayName": "Web Content Preprocessor Extension",
   "version": "0.0.1",
-  "description": "test desc",
-  "author": "sara",
+  "description": "A browser extension to extract, clean, and preprocess web page content for AI and indexing workflows. Includes a FastAPI backend for advanced NLP preprocessing.",
+  "author": "Sara <techiesarava@gmail.com>",
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
     "package": "plasmo package"
   },
   "dependencies": {
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.1",
     "plasmo": "0.90.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"

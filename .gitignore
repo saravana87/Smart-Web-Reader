@@ -23,7 +23,25 @@ yarn-error.log*
 .env*.local
 
 out/
+# Node
+node_modules/
+dist/
 build/
+.env
+*.log
+
+# Python
+fastapi-backend/.venv/
+fastapi-backend/__pycache__/
+fastapi-backend/*.pyc
+fastapi-backend/.pytest_cache/
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
 dist/
 
 # plasmo
