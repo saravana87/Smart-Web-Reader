@@ -31,3 +31,11 @@ This should create a production bundle for your extension, ready to be zipped an
 ## Submit to the webstores
 
 The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
+
+## Project Status & TODOs
+
+- The extension currently injects a floating "AI Reader" button and modal for extracting, cleaning, and sending web page content to the backend for AI processing.
+- **Backend:** Still need to add prompt options and more advanced prompt handling for AI responses.
+- **Extension:** Still need to add UI for prompt options and allow users to select or customize prompts before sending to the backend.
+
+Feel free to contribute or open issues for these features!
