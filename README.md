@@ -1,4 +1,5 @@
 This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+Demo video: https://www.youtube.com/watch?v=Kti61_g6GFM
 
 ## Getting Started
 
