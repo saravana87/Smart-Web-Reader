@@ -329,6 +329,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const bodyClone = document.body.cloneNode(true) as HTMLElement;
     bodyClone.querySelectorAll('script, style, noscript').forEach(el => el.remove());
     sendResponse({ text: bodyClone.textContent || "" });
+  } else if (request.action === "showAIReader") {
+    // Show the AI Reader modal
+    const btn = document.getElementById('web-content-reader-float-btn');
+    if (btn) {
+      btn.click();
+      sendResponse({ status: 'shown' });
+    } else {
+      sendResponse({ status: 'not_found' });
+    }
   }
   // Return true to indicate async response if needed (not needed here)
   return false;
