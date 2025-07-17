@@ -64,22 +64,83 @@ const WebContentReader = () => {
     setLoading(true);
     setAiResponse("");
     try {
-      const response = await fetch("http://localhost:8000/preprocess", {
+      // Get current page information
+      const currentUrl = window.location.href;
+      const pageTitle = document.title;
+      const sourceDomain = window.location.hostname;
+      
+      // Prepare content queue request
+      const queueRequest = {
+        user_id: 3, // Use the default extension user we created
+        url: currentUrl,
+        title: pageTitle,
+        content: content,
+        content_type: "full_page", // or "selected_text" if you want to distinguish
+        source_domain: sourceDomain,
+        priority: 1
+      };
+      
+      const response = await fetch("http://localhost:8000/api/content/queue", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content })
+        body: JSON.stringify(queueRequest)
       });
-      let data;
-      try {
-        data = await response.json();
-      } catch {
-        data = { cleaned: content, title: '', sentences: [], entities: [], keywords: [] };
+      
+      if (response.ok) {
+        const data = await response.json();
+        setAiResponse(
+          `✅ Content added to index queue successfully!\n\n` +
+          `Queue ID: ${data.id}\n` +
+          `Status: ${data.status}\n` +
+          `URL: ${data.url}\n` +
+          `Title: ${data.title || 'N/A'}\n` +
+          `Word Count: ${data.word_count}\n` +
+          `Priority: ${data.priority}\n\n` +
+          `Your content will be processed and indexed in the background.`
+        );
+      } else {
+        const errorData = await response.json();
+        setAiResponse(`❌ Error adding to queue: ${errorData.detail || 'Unknown error'}`);
       }
-      setAiResponse(
-        `Title: ${data.title || 'N/A'}\nKeywords: ${data.keywords?.join(', ') || 'N/A'}\nEntities: ${data.entities?.map(e => e[0] + ' (' + e[1] + ')').join(', ') || 'N/A'}\n---\n${data.cleaned}`
-      );
     } catch (e) {
-      setAiResponse("Error sending to index API");
+      setAiResponse(`❌ Error connecting to index API: ${e.message}`);
+    }
+    setLoading(false);
+  };
+
+  const handleViewQueue = async () => {
+    setLoading(true);
+    setAiResponse("");
+    try {
+      const response = await fetch("http://localhost:8000/api/content/queue?user_id=3", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      });
+      
+      if (response.ok) {
+        const queueItems = await response.json();
+        if (queueItems.length === 0) {
+          setAiResponse("📭 Your content queue is empty. Use 'Send to Index' to add content!");
+        } else {
+          let queueSummary = `📋 Content Queue (${queueItems.length} items):\n\n`;
+          queueItems.forEach((item, index) => {
+            queueSummary += `${index + 1}. [${item.status.toUpperCase()}] ${item.title || 'Untitled'}\n`;
+            queueSummary += `   URL: ${item.url}\n`;
+            queueSummary += `   Words: ${item.word_count} | Priority: ${item.priority}\n`;
+            queueSummary += `   Added: ${new Date(item.created_at).toLocaleString()}\n`;
+            if (item.processed_at) {
+              queueSummary += `   Processed: ${new Date(item.processed_at).toLocaleString()}\n`;
+            }
+            queueSummary += "\n";
+          });
+          setAiResponse(queueSummary);
+        }
+      } else {
+        const errorData = await response.json();
+        setAiResponse(`❌ Error fetching queue: ${errorData.detail || 'Unknown error'}`);
+      }
+    } catch (e) {
+      setAiResponse(`❌ Error connecting to queue API: ${e.message}`);
     }
     setLoading(false);
   };
@@ -274,6 +335,11 @@ const WebContentReader = () => {
         <button style={{ flex: 1, padding: '8px 0', borderRadius: 6, background: '#43a047', color: 'white', border: 'none', fontWeight: 500, cursor: content && !loading ? 'pointer' : 'not-allowed', opacity: content && !loading ? 1 : 0.6 }} onClick={handleSendToIndex} disabled={!content || loading}>
           {loading ? "Sending..." : "Send to Index"}
         </button>
+        <button style={{ flex: 1, padding: '8px 0', borderRadius: 6, background: '#2196f3', color: 'white', border: 'none', fontWeight: 500, cursor: !loading ? 'pointer' : 'not-allowed', opacity: !loading ? 1 : 0.6 }} onClick={handleViewQueue} disabled={loading}>
+          {loading ? "Loading..." : "View Queue"}
+        </button>
+      </div>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
         <button style={{ flex: 1, padding: '8px 0', borderRadius: 6, background: '#ff9800', color: 'white', border: 'none', fontWeight: 500, cursor: content && !loading ? 'pointer' : 'not-allowed', opacity: content && !loading ? 1 : 0.6 }} onClick={handleReplyWithAI} disabled={!content || loading}>
           {loading ? "Replying..." : "Reply with AI"}
         </button>
